@@ -13,7 +13,21 @@ def main():
     # Establish connection to PostgreSQL
     conn_mgr.connect()
 
-   
+    cursor = conn_mgr.connection.cursor()
+    
+    # Define the SQL query
+    query = "SELECT * FROM airport;"
+    
+    # Execute the query
+    cursor.execute(query)
+    
+    # Fetch all rows
+    rows = cursor.fetchall()
+    
+    # Print each row
+    for row in rows:
+        print(row)
+
     
     # Close the connection when done
     conn_mgr.close()

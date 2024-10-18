@@ -19,9 +19,7 @@ class ConnectionManager:
                 user=self.user,
                 password=self.password,
                 host=self.host,
-                port=self.port,
-                options='-c search_path=schema'
-            )
+                port=self.port            )
             print("Connected to the PostgreSQL database successfully")
         except psycopg.Error as e:
             print(f"Error connecting to PostgreSQL database: {e}")
