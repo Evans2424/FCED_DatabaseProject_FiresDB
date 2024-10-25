@@ -17,13 +17,13 @@ DROP TABLE IF EXISTS District;
 
 -- Create District table
 CREATE TABLE District (
-    id INT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     DistrictName VARCHAR(100)
 );
 
 -- Create Municipality table
 CREATE TABLE Municipality (
-    id INT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     MunicipalityName VARCHAR(100),
     District_id INT,
     FOREIGN KEY (District_id) REFERENCES District(id)
@@ -31,7 +31,7 @@ CREATE TABLE Municipality (
 
 -- Create Parishes table
 CREATE TABLE Parishes (
-    id INT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     ParishName VARCHAR(100),
     Municipality_id INT,
     FOREIGN KEY (Municipality_id) REFERENCES Municipality(id)
@@ -39,7 +39,7 @@ CREATE TABLE Parishes (
 
 -- Create Location_Info table
 CREATE TABLE Location_Info (
-    id INT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     Parish_id INT,
     Local VARCHAR(100),
     RNAP VARCHAR(100),
@@ -50,7 +50,7 @@ CREATE TABLE Location_Info (
 );
 
 CREATE TABLE DateTime (
-    id INT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     Year INT,
     Month INT,
     DataHoraAlerta TIMESTAMP,
@@ -62,13 +62,13 @@ CREATE TABLE DateTime (
 
 -- Create SourceAlert table
 CREATE TABLE SourceAlert (
-    id INT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     description VARCHAR(255)
 );
 
 -- Create FireCauses table
 CREATE TABLE FireCauses (
-    id INT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     CauseCode VARCHAR(50),
     CauseType VARCHAR(100),
     CauseGroup VARCHAR(100),
@@ -77,7 +77,7 @@ CREATE TABLE FireCauses (
 
 -- Create BurntArea table
 CREATE TABLE BurntArea (
-    id INT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     AreaPov_ha DECIMAL(10,2),
     AreaMato_ha DECIMAL(10,2),
     AreaAgric_ha DECIMAL(10,2),
@@ -87,7 +87,7 @@ CREATE TABLE BurntArea (
 
 -- Create FireIncidents table
 CREATE TABLE FireIncidents (
-    id INT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     Codigo_SGIF VARCHAR(50),
     Codigo_ANEPC VARCHAR(50),
     Area_info_id INT,
@@ -104,7 +104,7 @@ CREATE TABLE FireIncidents (
 
 -- Create FireWeatherConditions table
 CREATE TABLE FireWeatherConditions (
-    id INT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     FireIncident_id INT,
     DSR DECIMAL(5,2),
     FWI DECIMAL(5,2),
@@ -118,7 +118,7 @@ CREATE TABLE FireWeatherConditions (
 
 -- Create FireStation table
 CREATE TABLE FireStation (
-    id INT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     StationName VARCHAR(100),
     Parish INT,
     FOREIGN KEY (Parish) REFERENCES Parishes(id)
@@ -126,7 +126,7 @@ CREATE TABLE FireStation (
 
 -- Create Firefighter table
 CREATE TABLE Firefighter (
-    id INT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     FirstName VARCHAR(50),
     LastName VARCHAR(50),
     Rank VARCHAR(50),
@@ -136,7 +136,7 @@ CREATE TABLE Firefighter (
 
 -- Create Vehicle table
 CREATE TABLE Vehicle (
-    id INT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     VehicleType VARCHAR(50),
     LicensePlate VARCHAR(20),
     FireStation_id INT,
@@ -145,7 +145,7 @@ CREATE TABLE Vehicle (
 
 -- Create FireIncidentMeans table
 CREATE TABLE FireIncidentMeans (
-    id INT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     FireIncident_id INT,
     Firefighter_id INT,
     Vehicle_id INT,

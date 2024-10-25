@@ -14,48 +14,48 @@ def delete_all_data(conn):
     with conn.cursor() as cur:
         for table in tables:
             cur.execute(sql.SQL("DELETE FROM {}").format(sql.Identifier(table)))
+
+            # Reset the serial value
+            cur.execute(sql.SQL("ALTER SEQUENCE {} RESTART WITH 1").format(sql.Identifier(f"{table}_id_seq")))
+            print("OLA")
         conn.commit()
     print("All data deleted from the database.")
 
 def insert_data(conn, csv_file):
     """Read data from CSV and insert into appropriate tables."""
     with open(csv_file, 'r') as file:
-        csv_reader = csv.DictReader(file)
+        csv_reader = csv.DictReader(file, delimiter=';')
+        
+        row_count = 0
         
         for row in csv_reader:
-            print(row.keys())  # This will help you see the actual column names in the CSV
-
+            if row_count >= 20:
+                break
+        
+            print(">>>>>>>>>>>>")
+            print(row['Distrito'])
+        
             # Insert data into appropriate tables
             # This is a simplified example. You'll need to adapt this to your specific CSV structure and table relationships
             
             with conn.cursor() as cur:
                 # Insert into District table
-                cur.execute("""
-                    INSERT INTO District (districtname)
-                    VALUES (%s)
-                    ON CONFLICT (districtname) DO NOTHING
-                    RETURNING id
-                """, (row['Distrito'],))
-                district_id = cur.fetchone()[0]
-                
-                # Insert into Municipality table
-                cur.execute("""
-                    INSERT INTO Municipality (MunicipalityName, District_id)
-                    VALUES (%s, %s)
-                    ON CONFLICT (MunicipalityName) DO NOTHING
-                    RETURNING id
-                """, (row['MunicipalityName'], district_id))
-                municipality_id = cur.fetchone()[0]
-                
-                # Continue with other tables...
-                
-                # Insert into FireIncidents table
-                cur.execute("""
-                    INSERT INTO FireIncidents (Codigo_SGIF, Codigo_ANEPC)
-                    VALUES (%s, %s)
-                """, (row['Codigo_SGIF'], row['Codigo_ANEPC']))
-                
-                # Add more INSERT statements for other tables as needed
+                cur.execute("SELECT id FROM District WHERE districtname = %s", (row['Distrito'],))
+                result = cur.fetchone()
+                print(">>>>>>>>>>>>>>><")
+                print(result)
+        
+                if result is None:
+                    cur.execute("""
+                        INSERT INTO District (districtname)
+                        VALUES (%s)
+                        RETURNING id
+                    """, (row['Distrito'],))
+                    district_id = cur.fetchone()[0]
+                else:
+                    district_id = result[0]
+            
+            row_count += 1
         
         conn.commit()
-    print("Data inserted into the database.")
+        print("Data inserted into the database.")

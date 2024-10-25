@@ -27,6 +27,8 @@ def main():
 
     delete_all_data(conn_mgr.connection)
     insert_data(conn_mgr.connection, CSV_FILE)
+
+
     
     # Close the connection when done
     conn_mgr.close()
