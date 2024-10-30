@@ -1,8 +1,7 @@
 
 from ConnectionManager import ConnectionManager  
 from load_fires import delete_all_data, insert_data
-
-
+from menu import menu
 CSV_FILE = 'Data/Registos_Incendios_SGIF_2021_2023.csv'
 
 
@@ -36,4 +35,11 @@ def main():
 
 if __name__ == "__main__":
     #main()
-    print("Teste")
+    main_menu = menu()
+    while True:
+        menu.show_menu()
+        choice = int(input())
+        if choice == 0:
+            break
+        menu.execute_query(choice)
+    print("End of program")
