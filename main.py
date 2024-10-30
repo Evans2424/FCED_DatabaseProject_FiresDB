@@ -35,4 +35,5 @@ def main():
     conn_mgr.close()
 
 if __name__ == "__main__":
-    main()
+    #main()
+    print("Teste")
