@@ -1,3 +1,4 @@
+
 from ConnectionManager import ConnectionManager  
 from load_fires import delete_all_data, insert_data
 
