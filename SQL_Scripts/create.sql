@@ -68,8 +68,7 @@ CREATE TABLE SourceAlert (
 
 -- Create FireCauses table
 CREATE TABLE FireCauses (
-    id SERIAL PRIMARY KEY,
-    CauseCode VARCHAR(50),
+    CauseCode INT PRIMARY KEY,
     CauseType VARCHAR(100),
     CauseGroup VARCHAR(100),
     CauseDescription TEXT
@@ -143,13 +142,21 @@ CREATE TABLE Vehicle (
     FOREIGN KEY (FireStation_id) REFERENCES FireStation(id)
 );
 
--- Create FireIncidentMeans table
-CREATE TABLE FireIncidentMeans (
-    id SERIAL PRIMARY KEY,
-    FireIncident_id INT,
-    Firefighter_id INT,
+-- Create Vehicle_FireIncident join table
+CREATE TABLE Vehicle_FireIncident (
     Vehicle_id INT,
-    FOREIGN KEY (FireIncident_id) REFERENCES FireIncidents(id),
-    FOREIGN KEY (Firefighter_id) REFERENCES Firefighter(id),
-    FOREIGN KEY (Vehicle_id) REFERENCES Vehicle(id)
+    FireIncident_id INT,
+    PRIMARY KEY (Vehicle_id, FireIncident_id),
+    FOREIGN KEY (Vehicle_id) REFERENCES Vehicle(id),
+    FOREIGN KEY (FireIncident_id) REFERENCES FireIncident(id)
 );
+
+-- Create Firefighter_FireIncident join table
+CREATE TABLE Firefighter_FireIncident (
+    Firefighter_id INT,
+    FireIncident_id INT,
+    PRIMARY KEY (Firefighter_id, FireIncident_id),
+    FOREIGN KEY (Firefighter_id) REFERENCES Firefighter(id),
+    FOREIGN KEY (FireIncident_id) REFERENCES FireIncident(id)
+);
+
