@@ -1,18 +1,19 @@
 -- Drop existing tables if they exist
-DROP TABLE IF EXISTS FireIncidentMeans;
-DROP TABLE IF EXISTS Vehicle;
-DROP TABLE IF EXISTS Firefighter;
-DROP TABLE IF EXISTS FireStation;
-DROP TABLE IF EXISTS FireWeatherConditions;
-DROP TABLE IF EXISTS FireIncidents;
-DROP TABLE IF EXISTS BurntArea;
-DROP TABLE IF EXISTS FireCauses;
-DROP TABLE IF EXISTS SourceAlert;
-DROP TABLE IF EXISTS DateTime;
-DROP TABLE IF EXISTS Location_Info;
-DROP TABLE IF EXISTS Parishes;
-DROP TABLE IF EXISTS Municipality;
-DROP TABLE IF EXISTS District;
+DROP TABLE IF EXISTS Vehicle CASCADE;
+DROP TABLE IF EXISTS Firefighter CASCADE;
+DROP TABLE IF EXISTS FireStation CASCADE;
+DROP TABLE IF EXISTS FireWeatherConditions CASCADE;
+DROP TABLE IF EXISTS FireIncidents CASCADE;
+DROP TABLE IF EXISTS BurntArea CASCADE;
+DROP TABLE IF EXISTS FireCauses CASCADE;
+DROP TABLE IF EXISTS SourceAlert CASCADE;
+DROP TABLE IF EXISTS DateTime CASCADE;
+DROP TABLE IF EXISTS Location_Info CASCADE;
+DROP TABLE IF EXISTS Parishes CASCADE;
+DROP TABLE IF EXISTS Municipality CASCADE;
+DROP TABLE IF EXISTS District CASCADE;
+DROP TABLE IF EXISTS Vehicle_fireIncident CASCADE;
+DROP TABLE IF EXISTS Firefighter_fireIncident CASCADE;
 
 
 -- Create District table
@@ -41,7 +42,7 @@ CREATE TABLE Parishes (
 CREATE TABLE Location_Info (
     id SERIAL PRIMARY KEY,
     Parish_id INT,
-    Local VARCHAR(100),
+    Local VARCHAR(200),
     RNAP VARCHAR(100),
     RNMPF VARCHAR(100),
     Latitude DECIMAL(9,6),
@@ -69,8 +70,8 @@ CREATE TABLE SourceAlert (
 -- Create FireCauses table
 CREATE TABLE FireCauses (
     CauseCode INT PRIMARY KEY,
-    CauseType VARCHAR(100),
-    CauseGroup VARCHAR(100),
+    CauseType VARCHAR(300),
+    CauseGroup VARCHAR(300),
     CauseDescription TEXT
 );
 
@@ -84,6 +85,17 @@ CREATE TABLE BurntArea (
     ClasseArea VARCHAR(50)
 );
 
+-- Create FireWeatherConditions table
+CREATE TABLE FireWeatherConditions (
+    id SERIAL PRIMARY KEY,
+    DSR DECIMAL(10,4),
+    FWI DECIMAL(10,4),
+    ISI DECIMAL(10,4),
+    DC DECIMAL(10,4),
+    DMC DECIMAL(10,4),
+    FFMC DECIMAL(10,4),
+    BUI DECIMAL(10,4)
+);
 -- Create FireIncidents table
 CREATE TABLE FireIncidents (
     id SERIAL PRIMARY KEY,
@@ -94,26 +106,15 @@ CREATE TABLE FireIncidents (
     SourceAlert_id INT,
     Location_id INT,
     FireCause_id INT,
+    FireWeatherConditions_id INT,
     FOREIGN KEY (Area_info_id) REFERENCES BurntArea(id),
     FOREIGN KEY (DateTime_info_id) REFERENCES DateTime(id),
     FOREIGN KEY (SourceAlert_id) REFERENCES SourceAlert(id),
     FOREIGN KEY (Location_id) REFERENCES Location_Info(id),
-    FOREIGN KEY (FireCause_id) REFERENCES FireCauses(id)
+    FOREIGN KEY (FireCause_id) REFERENCES FireCauses(CauseCode),
+    FOREIGN KEY (FireWeatherConditions_id) REFERENCES FireWeatherConditions(id)
 );
 
--- Create FireWeatherConditions table
-CREATE TABLE FireWeatherConditions (
-    id SERIAL PRIMARY KEY,
-    FireIncident_id INT,
-    DSR DECIMAL(5,2),
-    FWI DECIMAL(5,2),
-    ISI DECIMAL(5,2),
-    DC DECIMAL(5,2),
-    DMC DECIMAL(5,2),
-    FFMC DECIMAL(5,2),
-    BUI DECIMAL(5,2),
-    FOREIGN KEY (FireIncident_id) REFERENCES FireIncidents(id)
-);
 
 -- Create FireStation table
 CREATE TABLE FireStation (
@@ -143,20 +144,20 @@ CREATE TABLE Vehicle (
 );
 
 -- Create Vehicle_FireIncident join table
-CREATE TABLE Vehicle_FireIncident (
+CREATE TABLE Vehicle_fireIncident (
     Vehicle_id INT,
     FireIncident_id INT,
     PRIMARY KEY (Vehicle_id, FireIncident_id),
     FOREIGN KEY (Vehicle_id) REFERENCES Vehicle(id),
-    FOREIGN KEY (FireIncident_id) REFERENCES FireIncident(id)
+    FOREIGN KEY (FireIncident_id) REFERENCES FireIncidents(id)
 );
 
 -- Create Firefighter_FireIncident join table
-CREATE TABLE Firefighter_FireIncident (
+CREATE TABLE Firefighter_fireIncident (
     Firefighter_id INT,
     FireIncident_id INT,
     PRIMARY KEY (Firefighter_id, FireIncident_id),
     FOREIGN KEY (Firefighter_id) REFERENCES Firefighter(id),
-    FOREIGN KEY (FireIncident_id) REFERENCES FireIncident(id)
+    FOREIGN KEY (FireIncident_id) REFERENCES FireIncidents(id)
 );
 

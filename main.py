@@ -26,7 +26,7 @@ def main():
     cursor = conn_mgr.connection.cursor()
 
     delete_all_data(conn_mgr.connection)
-    #insert_data(conn_mgr.connection, CSV_FILE)
+    insert_data(conn_mgr.connection, CSV_FILE)
 
 
     
