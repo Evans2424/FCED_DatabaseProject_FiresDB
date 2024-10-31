@@ -5,6 +5,13 @@ from datetime import datetime
 import math
 import pandas as pd
 
+def convert_to_float(value):
+    """Convert a string with comma to float if possible; return None if not."""
+    try:
+        return float(value.replace(',', '.'))
+    except (ValueError, AttributeError):
+        return None
+
 def delete_all_data(conn):
     tables = [
         'firefighter', 'vehicle_fireincident',
@@ -17,7 +24,6 @@ def delete_all_data(conn):
         for table in tables:
             cur.execute(sql.SQL("DELETE FROM {}").format(sql.Identifier(table)))
             if (table != 'firefighter_fireincident' and table != 'vehicle_fireincident' and table != 'firecauses'):
-                print("LLGLGL")
                 cur.execute(sql.SQL("ALTER SEQUENCE {} RESTART WITH 1").format(sql.Identifier(f"{table}_id_seq")))
         conn.commit()
     print("All data deleted from the database.")
@@ -32,7 +38,6 @@ def insert_data(conn, csv_file):
 
         with conn.cursor() as cur:
             for _, row in data.iterrows():
-               
                 try:
                     # Insert into District table
                     try:
@@ -46,7 +51,7 @@ def insert_data(conn, csv_file):
                         print(f"Error inserting District row: {row.to_dict()}")
                         print(e)
                         conn.rollback()
-                        break
+                        continue
 
                     # Insert into Municipality table
                     try:
@@ -60,7 +65,7 @@ def insert_data(conn, csv_file):
                         print(f"Error inserting Municipality row: {row.to_dict()}")
                         print(e)
                         conn.rollback()
-                        break
+                        continue
 
                     # Insert into Parishes table
                     try:
@@ -74,11 +79,11 @@ def insert_data(conn, csv_file):
                         print(f"Error inserting Parishes row: {row.to_dict()}")
                         print(e)
                         conn.rollback()
-                        break
+                        continue
 
                     # Check if Duracao_Horas is not NULL
                     duracao_horas = row['Duracao_Horas']
-                    duracao_horas_value = float(duracao_horas.replace(',', '.')) if duracao_horas else None
+                    duracao_horas_value = convert_to_float(duracao_horas) if duracao_horas and (converted_duracao := convert_to_float(duracao_horas)) is not None and not math.isnan(converted_duracao) else None
 
                     # Insert into DateTime table
                     try:
@@ -101,7 +106,7 @@ def insert_data(conn, csv_file):
                         print(f"Error inserting DateTime row: {row.to_dict()}")
                         print(e)
                         conn.rollback()
-                        break
+                        continue
 
                     # Convert CodCausa to integer if not NULL
                     cod_causa = row['CodCausa']
@@ -124,7 +129,7 @@ def insert_data(conn, csv_file):
                             print(f"Error inserting FireCauses row: {row.to_dict()}")
                             print(e)
                             conn.rollback()
-                            break
+                            continue
                     else:
                         cause_code = None
 
@@ -146,7 +151,7 @@ def insert_data(conn, csv_file):
                         print(f"Error inserting SourceAlert row: {row.to_dict()}")
                         print(e)
                         conn.rollback()
-                        break
+                        continue
 
                     # Insert into BurntArea table
                     try:
@@ -167,22 +172,44 @@ def insert_data(conn, csv_file):
                         print(f"Error inserting BurntArea row: {row.to_dict()}")
                         print(e)
                         conn.rollback()
-                        break
+                        continue
+                               
+                    # Check if FireWeatherConditions values are not NULL
 
-                    # Insert into FireWeatherConditions table
+
+                    dsr = row['DSR']
+                    dsr_value = convert_to_float(dsr) if dsr and (converted_dsr := convert_to_float(dsr)) is not None and not math.isnan(converted_dsr) else None
+
+                    fwi = row['FWI']
+                    fwi_value = convert_to_float(fwi) if fwi and (converted_fwi := convert_to_float(fwi)) is not None and not math.isnan(converted_fwi) else None
+
+                    isi = row['ISI']
+                    isi_value = convert_to_float(isi) if isi and (converted_isi := convert_to_float(isi)) is not None and not math.isnan(converted_isi) else None
+
+                    dc = row['DC']
+                    dc_value = convert_to_float(dc) if dc and (converted_dc := convert_to_float(dc)) is not None and not math.isnan(converted_dc) else None
+
+                    dmc = row['DMC']
+                    dmc_value = convert_to_float(dmc) if dmc and (converted_dmc := convert_to_float(dmc)) is not None and not math.isnan(converted_dmc) else None
+
+                    ffmc = row['FFMC']
+                    ffmc_value = convert_to_float(ffmc) if ffmc and (converted_ffmc := convert_to_float(ffmc)) is not None and not math.isnan(converted_ffmc) else None
+
+                    bui = row['BUI']
+                    bui_value = convert_to_float(bui) if bui and (converted_bui := convert_to_float(bui)) is not None and not math.isnan(converted_bui) else None
                     try:
                         cur.execute("""
                             INSERT INTO FireWeatherConditions (DSR, FWI, ISI, DC, DMC, FFMC, BUI)
                             VALUES (%s, %s, %s, %s, %s, %s, %s)
                             RETURNING id
                         """, (
-                            float(row['DSR'].replace(',', '.')),
-                            float(row['FWI'].replace(',', '.')),
-                            float(row['ISI'].replace(',', '.')),
-                            float(row['DC'].replace(',', '.')),
-                            float(row['DMC'].replace(',', '.')),
-                            float(row['FFMC'].replace(',', '.')),
-                            float(row['BUI'].replace(',', '.'))
+                            dsr_value,
+                            fwi_value,
+                            isi_value,
+                            dc_value,
+                            dmc_value,
+                            ffmc_value,
+                            bui_value
                         ))
                         fire_weather_conditions_id = cur.fetchone()[0]
                         print("Inserted FireWeatherConditions ID:", fire_weather_conditions_id)
@@ -190,7 +217,7 @@ def insert_data(conn, csv_file):
                         print(f"Error inserting FireWeatherConditions row: {row.to_dict()}")
                         print(e)
                         conn.rollback()
-                        break
+                        continue
 
                     # Insert into Location_Info table
                     try:
@@ -212,7 +239,7 @@ def insert_data(conn, csv_file):
                         print(f"Error inserting Location_Info row: {row.to_dict()}")
                         print(e)
                         conn.rollback()
-                        break
+                        continue
 
                     # Insert into FireIncidents table
                     try:
@@ -236,16 +263,16 @@ def insert_data(conn, csv_file):
                         print(f"Error inserting FireIncidents row: {row.to_dict()}")
                         print(e)
                         conn.rollback()
-                        break
+                        continue
 
                     row_count += 1
                     print(f'Row count: {row_count}')
 
                 except Exception as e:
                     print(f"Error inserting row: {row.to_dict()}")
-                    print(e)
+                    print(f'Error is {e}')
                     conn.rollback()
-                    continue
+                    break
 
             conn.commit()
         print("Data inserted into the database.")
@@ -253,3 +280,6 @@ def insert_data(conn, csv_file):
         print("Error reading CSV file or inserting data into the database.")
         print(e)
 
+# Example usage
+# conn = psycopg.connect("dbname=test user=postgres password=secret")
+# insert_data(conn, 'your_file.csv')
