@@ -145,7 +145,15 @@ class Menu:
                                 self.db_manager.export_to_csv(df)
 
                 case '9':
-                    query = "select b.AreaTotal_ha,dt.datahoraalerta from burntarea as b join Fireincidents as fi on fi.Area_info_id = b.id join DateTime as dt on dt.id = fi.DateTime_info_id where left(CAST(dt.datahoraalerta as VARCHAR),4) = '2022'"
+                    query = '''
+                    select SUM(b.AreaTotal_ha) AS TOTAL,TO_CHAR(dt.datahoraalerta, 'DD/MM/YYYY') as DATE
+                    from burntarea as b 
+                    join Fireincidents as fi on fi.Area_info_id = b.id 
+                    join DateTime as dt on dt.id = fi.DateTime_info_id
+                    group by TO_CHAR(dt.datahoraalerta, 'DD/MM/YYYY') 
+                    HAVING RIGHT(TO_CHAR(dt.datahoraalerta, 'DD/MM/YYYY'),4) = '2022' 
+                    '''
+                    
                     print(self.db_manager.show_in_pandas(self.query_executor(query)))
                     while True:
                         self.show_options(choice)
