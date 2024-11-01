@@ -1,6 +1,6 @@
 from ConnectionManager import ConnectionManager  
 from load_fires import delete_all_data, insert_data
-from GUI import main_menu
+from GUI import Menu
 from DatabaseManager import DatabaseManager
 
 CSV_FILE = 'Data/Registos_Incendios_SGIF_2021_2023.csv'
@@ -20,15 +20,16 @@ def main():
 
     # Instantiate the ConnectionManager class
     conn_mgr = ConnectionManager(**DB_PARAMS)
-
     db_mgr = DatabaseManager(conn_mgr)
 
     # Establish connection to PostgreSQL
     conn_mgr.connect()
 
-    main_menu(db_mgr)
+    #print(db_mgr.fires_from_Porto())
+    main = Menu(db_mgr)
+    main.main_menu()
     
-    cursor = conn_mgr.connection.cursor()
+    #cursor = conn_mgr.connection.cursor()
 
     #delete_all_data(conn_mgr.connection)
     #insert_data(conn_mgr.connection, CSV_FILE)
