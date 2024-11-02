@@ -3,26 +3,12 @@ import psycopg
 from tabulate import tabulate
 import pandas as pd
 from datetime import datetime
+import uuid
 
 class DatabaseManager:
     def __init__(self, connection_manager):
         self.connection_manager = connection_manager
 
-    def fires_from_Porto(self):
-        cursor = self.connection_manager.connection.cursor()
-        cursor.execute("""
-            SELECT fi.*
-            FROM fireincidents fi
-            JOIN location_info li ON fi.location_id = li.id
-            JOIN parishes p ON li.parish_id = p.id
-            JOIN municipality m ON p.municipality_id = m.id
-            JOIN district d ON m.district_id = d.id
-            WHERE d.districtname = 'Porto'
-        """)
-        records = cursor.fetchall()
-        cursor.close()
-        return records
-    
     def run_select(self,query):
         cursor = self.connection_manager.connection.cursor()
         cursor.execute(query)
@@ -36,16 +22,13 @@ class DatabaseManager:
         df = pd.DataFrame(response,columns = column)
         return df
     def export_to_csv(self,dataframe):
-        dataframe.to_csv(f"EXPORT_{datetime.now()}.csv", index=False)
+        random_uuid = uuid.uuid4()
+        now = datetime.now()
+        # Format the datetime, removing the decimal point from seconds
+        formatted_time = now.strftime("%Y-%m-%d")
+        dataframe.to_csv(f"EXPORT_{formatted_time}_{random_uuid}.csv", index=False)
+        print("Export Done")
 
-    def display_records(self, records):
-        if records:
-            # Define headers for table
-            headers = ["ID", "Incident Date", "Severity", "Location ID"]  # Customize these headers
-            # Print records in a tabular format
-            print(tabulate(records, headers=headers, tablefmt="grid"))
-        else:
-            print("No records found.")
 
        
     

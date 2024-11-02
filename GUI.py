@@ -34,9 +34,6 @@ class Menu:
         print("--------------------------------")
         print("[0] return to the mais menu")
 
-    def query_executor(self,option_query):
-        db_response = self.db_manager.run_select(option_query)
-        return db_response
 
     def main_menu(self):
         while True:
@@ -49,7 +46,7 @@ class Menu:
                     break
                 case '1':
                     query = "SELECT 'HELLO WORLD'"
-                    print(self.db_manager.show_in_pandas(self.query_executor(query)))
+                    print(self.db_manager.show_in_pandas(self.db_manager.run_select(query)))
                     while True:
                         self.show_options(choice)
                         choice_options = input()
@@ -57,11 +54,11 @@ class Menu:
                             case '0':
                                 break
                             case '1':
-                                df = self.db_manager.show_in_pandas(self.query_executor(query))
+                                df = self.db_manager.show_in_pandas(self.db_manager.run_select(query))
                                 self.db_manager.export_to_csv(df)
                 case '2':
                     query = "SELECT 'HELLO WORLD'"
-                    print(self.db_manager.show_in_pandas(self.query_executor(query)))
+                    print(self.db_manager.show_in_pandas(self.db_manager.run_select(query)))
                     while True:
                         self.show_options(choice)
                         choice_options = input()
@@ -69,11 +66,11 @@ class Menu:
                             case '0':
                                 break
                             case '1':
-                                df = self.db_manager.show_in_pandas(self.query_executor(query))
+                                df = self.db_manager.show_in_pandas(self.db_manager.run_select(query))
                                 self.db_manager.export_to_csv(df)
                 case '3':
                     query = "SELECT 'HELLO WORLD'"
-                    print(self.db_manager.show_in_pandas(self.query_executor(query)))
+                    print(self.db_manager.show_in_pandas(self.db_manager.run_select(query)))
                     while True:
                         self.show_options(choice)
                         choice_options = input()
@@ -81,11 +78,11 @@ class Menu:
                             case '0':
                                 break
                             case '1':
-                                df = self.db_manager.show_in_pandas(self.query_executor(query))
+                                df = self.db_manager.show_in_pandas(self.db_manager.run_select(query))
                                 self.db_manager.export_to_csv(df)
                 case '4':
                     query = "SELECT 'HELLO WORLD'"
-                    print(self.db_manager.show_in_pandas(self.query_executor(query)))
+                    print(self.db_manager.show_in_pandas(self.db_manager.run_select(query)))
                     while True:
                         self.show_options(choice)
                         choice_options = input()
@@ -93,11 +90,11 @@ class Menu:
                             case '0':
                                 break
                             case '1':
-                                df = self.db_manager.show_in_pandas(self.query_executor(query))
+                                df = self.db_manager.show_in_pandas(self.db_manager.run_select(query))
                                 self.db_manager.export_to_csv(df)
                 case '5':
                     query = "SELECT 'HELLO WORLD'"
-                    print(self.db_manager.show_in_pandas(self.query_executor(query)))
+                    print(self.db_manager.show_in_pandas(self.db_manager.run_select(query)))
                     while True:
                         self.show_options(choice)
                         choice_options = input()
@@ -105,11 +102,11 @@ class Menu:
                             case '0':
                                 break
                             case '1':
-                                df = self.db_manager.show_in_pandas(self.query_executor(query))
+                                df = self.db_manager.show_in_pandas(self.db_manager.run_select(query))
                                 self.db_manager.export_to_csv(df)
                 case '6':
                     query = "SELECT 'HELLO WORLD'"
-                    print(self.db_manager.show_in_pandas(self.query_executor(query)))
+                    print(self.db_manager.show_in_pandas(self.db_manager.run_select(query)))
                     while True:
                         self.show_options(choice)
                         choice_options = input()
@@ -117,11 +114,11 @@ class Menu:
                             case '0':
                                 break
                             case '1':
-                                df = self.db_manager.show_in_pandas(self.query_executor(query))
+                                df = self.db_manager.show_in_pandas(self.db_manager.run_select(query))
                                 self.db_manager.export_to_csv(df)
                 case '7':
                     query = "SELECT 'HELLO WORLD'"
-                    print(self.db_manager.show_in_pandas(self.query_executor(query)))
+                    print(self.db_manager.show_in_pandas(self.db_manager.run_select(query)))
                     while True:
                         self.show_options(choice)
                         choice_options = input()
@@ -129,11 +126,11 @@ class Menu:
                             case '0':
                                 break
                             case '1':
-                                df = self.db_manager.show_in_pandas(self.query_executor(query))
+                                df = self.db_manager.show_in_pandas(self.db_manager.run_select(query))
                                 self.db_manager.export_to_csv(df)
                 case '8':
                     query = "SELECT 'HELLO WORLD'"
-                    print(self.db_manager.show_in_pandas(self.query_executor(query)))
+                    print(self.db_manager.show_in_pandas(self.db_manager.run_select(query)))
                     while True:
                         self.show_options(choice)
                         choice_options = input()
@@ -141,7 +138,7 @@ class Menu:
                             case '0':
                                 break
                             case '1':
-                                df = self.db_manager.show_in_pandas(self.query_executor(query))
+                                df = self.db_manager.show_in_pandas(self.db_manager.run_select(query))
                                 self.db_manager.export_to_csv(df)
 
                 case '9':
@@ -157,7 +154,7 @@ class Menu:
                             EXTRACT(MONTH FROM dt.datahoraalerta);
                     '''
                     
-                    print(self.db_manager.show_in_pandas(self.query_executor(query)))
+                    print(self.db_manager.show_in_pandas(self.db_manager.run_select(query)))
                     while True:
                         self.show_options(choice)
                         choice_options = input()
@@ -165,10 +162,10 @@ class Menu:
                             case '0':
                                 break
                             case '1':
-                                df = self.db_manager.show_in_pandas(self.query_executor(query))
+                                df = self.db_manager.show_in_pandas(self.db_manager.run_select(query))
                                 self.db_manager.export_to_csv(df)
                             case '2':
-                                df = self.db_manager.show_in_pandas(self.query_executor(query))
+                                df = self.db_manager.show_in_pandas(self.db_manager.run_select(query))
                                 plotter = query_plotter()
                                 plotter.setfigize(20,10)
                                 plotter.setplottitle('Line Chart total vs Date')
@@ -199,7 +196,7 @@ class Menu:
                     join Datetime as dt on dt.id = fi.DateTime_info_id
                     where District.DistrictName = '{district}'
                     """
-                    print(self.db_manager.show_in_pandas(self.query_executor(query)))
+                    print(self.db_manager.show_in_pandas(self.db_manager.run_select(query)))
                     while True:
                         self.show_options(choice)
                         choice_options = input()
@@ -207,7 +204,7 @@ class Menu:
                             case '0':
                                 break
                             case '1':
-                                df = self.db_manager.show_in_pandas(self.query_executor(query))
+                                df = self.db_manager.show_in_pandas(self.db_manager.run_select(query))
                                 self.db_manager.export_to_csv(df)
                 case _:
                     print("Invalid choice. Please try again.")

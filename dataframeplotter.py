@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
 from datetime import datetime
+import uuid
 
 class query_plotter:
     def __init__(self):
@@ -13,15 +14,19 @@ class query_plotter:
     def setplottitle(self,titlestr=''):
         self.title = titlestr
     def bar_plot(df,x,y): 
-        self.setfigize(self.height,self.width)
-        sns.barplot(df,x=x,y=y)   
+        return None
+        #TBD  
 
     def line_plot(self,df,x,y):
         plt.figure(figsize = (self.height,self.width))
         plt.title(self.title)
         plt.xticks(rotation=90) 
         sns.lineplot(df,x=x,y=y)
-        plt.savefig(f"Plot_{datetime.now()}.pdf")
+        random_uuid = uuid.uuid4()
+        now = datetime.now()
+        # Format the datetime, removing the decimal point from seconds
+        formatted_time = now.strftime("%Y-%m-%d")
+        plt.savefig(f"Plot_{formatted_time}_{random_uuid}.pdf")
         print("Plot Saved")
         
 
