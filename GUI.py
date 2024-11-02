@@ -1,5 +1,5 @@
 from tabulate import tabulate
-
+from dataframeplotter import query_plotter
 
 class Menu:
     def __init__(self, db_manager):
@@ -17,8 +17,8 @@ class Menu:
         print("[6] Fire Incidents by Source Alert Description")
         print("[7] Identify Potential High-Risk Areas for Fire Incidents")
         print("[8] Total Response Time Comparison Between Districts")
-        print("[9] Total Burned area By date where alert was in 2022")
-        print("[10] Burned area and fire duration of that district")
+        print("[9] Total Burned area By Month/Year")
+        print("[10] Burned by type and fire duration of that district")
         print("--------------------------------")
         print("[0] to exit the program")
         print()
@@ -146,12 +146,15 @@ class Menu:
 
                 case '9':
                     query = '''
-                    select SUM(b.AreaTotal_ha) AS TOTAL,TO_CHAR(dt.datahoraalerta, 'DD/MM/YYYY') as DATE
+                    select SUM(b.AreaTotal_ha) AS TOTAL,TO_CHAR(dt.datahoraalerta, 'MM/YYYY') as DATE
                     from burntarea as b 
                     join Fireincidents as fi on fi.Area_info_id = b.id 
                     join DateTime as dt on dt.id = fi.DateTime_info_id
-                    group by TO_CHAR(dt.datahoraalerta, 'DD/MM/YYYY') 
-                    HAVING RIGHT(TO_CHAR(dt.datahoraalerta, 'DD/MM/YYYY'),4) = '2022' 
+                    group by TO_CHAR(dt.datahoraalerta, 'MM/YYYY'), 
+                            EXTRACT(YEAR FROM dt.datahoraalerta), 
+                            EXTRACT(MONTH FROM dt.datahoraalerta)
+                    ORDER BY EXTRACT(YEAR FROM dt.datahoraalerta), 
+                            EXTRACT(MONTH FROM dt.datahoraalerta);
                     '''
                     
                     print(self.db_manager.show_in_pandas(self.query_executor(query)))
@@ -164,8 +167,38 @@ class Menu:
                             case '1':
                                 df = self.db_manager.show_in_pandas(self.query_executor(query))
                                 self.db_manager.export_to_csv(df)
+                            case '2':
+                                df = self.db_manager.show_in_pandas(self.query_executor(query))
+                                plotter = query_plotter()
+                                plotter.setfigize(20,10)
+                                plotter.setplottitle('Line Chart total vs Date')
+                                plotter.line_plot(df,'date','total')
+
                 case '10':
-                    query = "SELECT 'HELLO WORLD'"
+                    districts = ["Aveiro","Vila Real","Viseu","Bragança","Braga","Viana do Castelo","Porto","Lisboa","Coimbra","Beja","Castelo Branco","Setúbal","Guarda","Faro","Santarém","Portalegre","Leiria","Évora"]
+                    print("Your Options:")
+                    print(districts)
+                    district = input("Select your district: ")
+                    if district not in districts:
+                        print("Invalid District Name")
+                        continue
+                    print(district)
+                    query = f"""
+                    SELECT fi.Codigo_SGIF, 
+                    Duracao_Horas,
+                    AreaPov_ha,
+                    AreaMato_ha,
+                    AreaAgric_ha,
+                    Districtname 
+                    FROM fireIncidents as fi
+                    Join burntarea as ba on fi.Area_info_id = ba.id 
+                    join Location_info as li on li.id = fi.Location_id
+                    join Parishes as pa on pa.id = li.parish_id
+                    join Municipality as mu on mu.id = pa.Municipality_id
+                    join District on District.id = mu.District_id
+                    join Datetime as dt on dt.id = fi.DateTime_info_id
+                    where District.DistrictName = '{district}'
+                    """
                     print(self.db_manager.show_in_pandas(self.query_executor(query)))
                     while True:
                         self.show_options(choice)
