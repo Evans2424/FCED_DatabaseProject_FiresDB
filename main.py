@@ -24,16 +24,16 @@ def main():
 
     # Establish connection to PostgreSQL
     conn_mgr.connect()
-
+    #delete_all_data(conn_mgr.connection)
+    #insert_data(conn_mgr.connection, CSV_FILE)
+ 
     #print(db_mgr.fires_from_Porto())
     main = Menu(db_mgr)
     main.main_menu()
     
     #cursor = conn_mgr.connection.cursor()
 
-    #delete_all_data(conn_mgr.connection)
-    #insert_data(conn_mgr.connection, CSV_FILE)
- 
+
     
     # Close the connection when done
     conn_mgr.close()

@@ -191,7 +191,18 @@ class Menu:
                                 df = self.db_manager.show_in_pandas(self.db_manager.run_select(query))
                                 self.db_manager.export_to_csv(df)
                 case '8':
-                    query = "SELECT 'HELLO WORLD'"
+                    query = """
+                    with CTE as (SELECT d.DistrictName, EXTRACT(EPOCH FROM AGE(dt.DataHora_primeiraIntervenc, dt.datahoraalerta)) / 3600  AS hours_diff
+                    FROM FireIncidents fi
+                    join DateTime as dt on dt.id = fi.DateTime_info_id                                 
+                    JOIN Location_Info li ON fi.Location_id = li.id
+                    JOIN Parishes p ON li.Parish_id = p.id
+                    JOIN Municipality m ON p.Municipality_id = m.id
+                    JOIN District d ON m.District_id = d.id)
+                    SELECT DistrictName,
+                    ROUND(cast(sum(hours_diff) as numeric),2) as TIME_TO_RESPONSE
+                    from CTE group by DistrictName
+                    """
                     print(self.db_manager.show_in_pandas(self.db_manager.run_select(query)))
                     while True:
                         self.show_options(choice)
@@ -202,6 +213,12 @@ class Menu:
                             case '1':
                                 df = self.db_manager.show_in_pandas(self.db_manager.run_select(query))
                                 self.db_manager.export_to_csv(df)
+                            case '2':
+                                df = self.db_manager.show_in_pandas(self.db_manager.run_select(query))
+                                plotter = query_plotter()
+                                plotter.setfigize(20,10)
+                                plotter.setplottitle('Districts vs TIME_TO_RESPONSE')
+                                plotter.bar_plot(df,'districtname','time_to_response')
 
                 case '9':
                     query = '''
