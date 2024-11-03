@@ -13,9 +13,15 @@ class query_plotter:
         self.width = width1
     def setplottitle(self,titlestr=''):
         self.title = titlestr
-    def bar_plot(df,x,y): 
-        return None
-        #TBD  
+
+    def bar_plot(self, df, x, y):
+        plt.figure(figsize=(self.height, self.width))
+        plt.title(self.title)
+        plt.xticks(rotation=90)
+        sns.barplot(df, x=x, y=y)
+        random_uuid = uuid.uuid4()
+        plt.savefig(f"BarPlot_{random_uuid}.pdf")
+        print("Bar Plot Saved")
 
     def line_plot(self,df,x,y):
         plt.figure(figsize = (self.height,self.width))
