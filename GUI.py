@@ -45,7 +45,16 @@ class Menu:
                     print("Exiting...")
                     break
                 case '1':
-                    query = "SELECT 'HELLO WORLD'"
+                    query = """
+                                SELECT d.DistrictName, COUNT(fi.id) AS TotalFireIncidents
+                                FROM FireIncidents fi
+                                JOIN Location_Info li ON fi.Location_id = li.id
+                                JOIN Parishes p ON li.Parish_id = p.id
+                                JOIN Municipality m ON p.Municipality_id = m.id
+                                JOIN District d ON m.District_id = d.id
+                                GROUP BY d.DistrictName
+                                ORDER BY TotalFireIncidents DESC;
+                            """
                     print(self.db_manager.show_in_pandas(self.db_manager.run_select(query)))
                     while True:
                         self.show_options(choice)
@@ -56,8 +65,24 @@ class Menu:
                             case '1':
                                 df = self.db_manager.show_in_pandas(self.db_manager.run_select(query))
                                 self.db_manager.export_to_csv(df)
+                            case '2':
+                                df = self.db_manager.show_in_pandas(self.db_manager.run_select(query))
+                                plotter = query_plotter()
+                                plotter.setfigize(20,10)
+                                plotter.setplottitle('Districts vs FireIncidents')
+                                plotter.bar_plot(df,'districtname','totalfireincidents')
                 case '2':
-                    query = "SELECT 'HELLO WORLD'"
+                    query = """
+                                SELECT d.DistrictName, AVG(b.AreaTotal_ha) AS AverageBurnedArea
+                                FROM BurntArea b
+                                JOIN FireIncidents fi ON b.id = fi.Area_info_id
+                                JOIN Location_Info li ON fi.Location_id = li.id
+                                JOIN Parishes p ON li.Parish_id = p.id
+                                JOIN Municipality m ON p.Municipality_id = m.id
+                                JOIN District d ON m.District_id = d.id
+                                GROUP BY d.DistrictName
+                                ORDER BY AverageBurnedArea DESC;
+                            """
                     print(self.db_manager.show_in_pandas(self.db_manager.run_select(query)))
                     while True:
                         self.show_options(choice)
@@ -68,8 +93,26 @@ class Menu:
                             case '1':
                                 df = self.db_manager.show_in_pandas(self.db_manager.run_select(query))
                                 self.db_manager.export_to_csv(df)
+                            case '2':
+                                df = self.db_manager.show_in_pandas(self.db_manager.run_select(query))
+                                plotter = query_plotter()
+                                plotter.setfigize(20,10)
+                                plotter.setplottitle('Districts vs AverageBurnedArea')
+                                plotter.bar_plot(df,'districtname','averageburnedarea')
                 case '3':
-                    query = "SELECT 'HELLO WORLD'"
+                    query = """
+                                SELECT 
+                                    fi.Codigo_SGIF,
+                                    fi.Codigo_ANEPC,
+                                    dt.DataHoraAlerta,
+                                    dt.DataHora_PrimeiraIntervenc,
+                                    dt.DataHora_Extincao,
+                                    dt.Duracao_Horas
+                                FROM FireIncidents fi
+                                JOIN DateTime dt ON fi.DateTime_info_id = dt.id
+                                WHERE dt.Duracao_Horas > 24
+                                ORDER BY dt.Duracao_Horas DESC;
+                            """
                     print(self.db_manager.show_in_pandas(self.db_manager.run_select(query)))
                     while True:
                         self.show_options(choice)
