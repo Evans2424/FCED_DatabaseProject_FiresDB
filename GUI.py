@@ -124,7 +124,10 @@ class Menu:
                                 df = self.db_manager.show_in_pandas(self.db_manager.run_select(query))
                                 self.db_manager.export_to_csv(df)
                 case '4':
-                    query = "SELECT 'HELLO WORLD'"
+                    query = """SELECT FireStation_id, COUNT(*) AS NumberOfFirefighters 
+                               FROM Firefighter 
+                               GROUP BY FireStation_id
+                               """
                     print(self.db_manager.show_in_pandas(self.db_manager.run_select(query)))
                     while True:
                         self.show_options(choice)
@@ -136,7 +139,13 @@ class Menu:
                                 df = self.db_manager.show_in_pandas(self.db_manager.run_select(query))
                                 self.db_manager.export_to_csv(df)
                 case '5':
-                    query = "SELECT 'HELLO WORLD'"
+                    query = """SELECT FireCauses.CauseDescription, COUNT(FireIncidents.FireCause_id) AS NumberOfOccurrences 
+                                FROM FireIncidents JOIN FireCauses ON FireIncidents.FireCause_id = FireCauses.CauseCode
+                                GROUP BY FireCauses.CauseDescription
+                                HAVING COUNT(FireIncidents.FireCause_id) >= ALL (SELECT COUNT(FireIncidents.FireCause_id)
+                                FROM FireIncidents JOIN FireCauses ON FireIncidents.FireCause_id = FireCauses.CauseCode
+                                GROUP BY FireCauses.CauseDescription)
+                                   """
                     print(self.db_manager.show_in_pandas(self.db_manager.run_select(query)))
                     while True:
                         self.show_options(choice)
@@ -148,7 +157,11 @@ class Menu:
                                 df = self.db_manager.show_in_pandas(self.db_manager.run_select(query))
                                 self.db_manager.export_to_csv(df)
                 case '6':
-                    query = "SELECT 'HELLO WORLD'"
+                    query = """SELECT SourceAlert.description, COUNT(FireIncidents.SourceAlert_id) AS NumberOfIncidents
+                               FROM FireIncidents JOIN SourceAlert ON FireIncidents.SourceAlert_id = SourceAlert.id
+                               GROUP BY SourceAlert.description
+                               ORDER BY NumberOfIncidents DESC
+                               """
                     print(self.db_manager.show_in_pandas(self.db_manager.run_select(query)))
                     while True:
                         self.show_options(choice)
@@ -160,7 +173,13 @@ class Menu:
                                 df = self.db_manager.show_in_pandas(self.db_manager.run_select(query))
                                 self.db_manager.export_to_csv(df)
                 case '7':
-                    query = "SELECT 'HELLO WORLD'"
+                    query = """SELECT M.MunicipalityName, COUNT(FireIncidents.Codigo_SGIF) AS NumberOfIncidents
+                               FROM FireIncidents JOIN Location_info ON FireIncidents.Location_id = Location_info.id
+                               JOIN Parishes P ON Location_info.Parish_id = P.id
+                               JOIN Municipality M ON P.Municipality_id = M.id
+                               GROUP BY M.MunicipalityName
+                               ORDER BY NumberOfIncidents DESC
+                    """
                     print(self.db_manager.show_in_pandas(self.db_manager.run_select(query)))
                     while True:
                         self.show_options(choice)
