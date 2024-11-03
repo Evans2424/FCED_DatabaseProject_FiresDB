@@ -25,8 +25,9 @@ Provides editable fields for easy modification of database credentials and schem
 A Python script that offers a graphical user interface (GUI) for querying the database. It allows users to view detailed information about fire incidents, search for specific records, and access relevant data stored in the database.
 Dataframeplotter.py
 A Python script used to generate graphs and visualizations for specific database queries. This is particularly useful for analysis and insights based on the dataset.
-      7.   DatabaseManager.py
 
+DatabaseManager.py
+This is responsible for making the connection between the database and the GUI, it is the object responsible for running the querys and returning results, showing in a way thats more user friendly and exporting to CSV  
 
 Main.py
 The main script for starting the project. This script should be edited to include the correct database connection credentials. It initializes the database connection and coordinates the functionality of the other scripts.
