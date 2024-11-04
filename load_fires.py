@@ -4,6 +4,8 @@ from psycopg import sql
 from datetime import datetime
 import math
 import pandas as pd
+from tqdm import tqdm
+
 
 def convert_to_float(value):
     """Convert a string with comma to float if possible; return None if not."""
@@ -14,30 +16,63 @@ def convert_to_float(value):
 
 def delete_all_data(conn):
     tables = [
-        'firefighter', 'vehicle_fireincident',
-        'firestation', 'firefighter_fireincident', 'vehicle','fireincidents','fireweatherconditions', 'location_info', 'parishes',
-        'municipality', 'sourcealert', 'burntarea', 'datetime', 'district',
-        'firecauses'
+        'sourcealert', 'burntarea', 'firefighter_fireincident','vehicle_fireincident',
+        'firefighter', 'firestation', 'vehicle','fireincidents','fireweatherconditions', 
+        'location_info', 'parishes', 'municipality', 'datetime', 'district', 'firecauses'
     ]
     
-    with conn.cursor() as cur:
-        for table in tables:
-            cur.execute(sql.SQL("DELETE FROM {}").format(sql.Identifier(table)))
-            if (table != 'firefighter_fireincident' and table != 'vehicle_fireincident' and table != 'firecauses'):
-                cur.execute(sql.SQL("ALTER SEQUENCE {} RESTART WITH 1").format(sql.Identifier(f"{table}_id_seq")))
-        conn.commit()
+    print("Deleting all data from the database...")
+    try:
+        with conn.cursor() as cur:
+            for table in tables:
+                print(f"Deleting data from table: {table}")
+                
+                # Attempt to delete all data from the table
+                try:
+                    cur.execute(sql.SQL("DELETE FROM {}").format(sql.Identifier(table)))
+                except Exception as e:
+                    print(f"Error deleting data from table {table}: {e}")
+                    continue
+                
+                # Attempt to reset sequence, if it exists
+                try:
+                    cur.execute(sql.SQL("ALTER SEQUENCE {} RESTART WITH 1").format(sql.Identifier(f"{table}_id_seq")))
+                except Exception as e:
+                    print(f"Error resetting sequence for table {table}: {e}")
+                    continue
+                
+            conn.commit()
+            
+    except Exception as e:
+        print("Unexpected error during deletion.")
+        print(e)
+
     print("All data deleted from the database.")
+
+def insert_mock_data(conn):
+    with open('SQL_Scripts/insert.sql', 'r') as file:
+        sql_script = file.read()
+
+    with conn.cursor() as cur:
+        cur.execute(sql_script)
+        conn.commit()
+
+    print(f"Executed SQL mock data insertion script")
+
+
 
 def insert_data(conn, csv_file):
     try:
         # Load CSV data, parse datetime columns
         data = pd.read_csv(csv_file, delimiter=';', parse_dates=['DataHoraAlerta', 'DataHora_PrimeiraIntervencao', 'DataHora_Extincao'], dayfirst=True)
-        
+        num_rows = len(data)
+
         row_count = 0
         print("Inserting data into the database...")
 
         with conn.cursor() as cur:
-            for _, row in data.iterrows():
+            for index, row in tqdm(data.iterrows(), total=num_rows, desc="Loading data", unit="row"):
+
                 try:
                     # Insert into District table
                     try:
@@ -101,7 +136,6 @@ def insert_data(conn, csv_file):
                             bool(row['IncSup24horas'])
                         ))
                         datetime_id = cur.fetchone()[0]
-                        print("Inserted DateTime ID:", datetime_id)
                     except Exception as e:
                         print(f"Error inserting DateTime row: {row.to_dict()}")
                         print(e)
@@ -167,7 +201,6 @@ def insert_data(conn, csv_file):
                             row['ClasseArea']
                         ))
                         burnt_area_id = cur.fetchone()[0]
-                        print("Inserted BurntArea ID:", burnt_area_id)
                     except Exception as e:
                         print(f"Error inserting BurntArea row: {row.to_dict()}")
                         print(e)
@@ -212,7 +245,6 @@ def insert_data(conn, csv_file):
                             bui_value
                         ))
                         fire_weather_conditions_id = cur.fetchone()[0]
-                        print("Inserted FireWeatherConditions ID:", fire_weather_conditions_id)
                     except Exception as e:
                         print(f"Error inserting FireWeatherConditions row: {row.to_dict()}")
                         print(e)
@@ -234,7 +266,6 @@ def insert_data(conn, csv_file):
                             float(row['Longitude'].replace(',', '.'))
                         ))
                         location_info_id = cur.fetchone()[0]
-                        print("Inserted Location_Info ID:", location_info_id)
                     except Exception as e:
                         print(f"Error inserting Location_Info row: {row.to_dict()}")
                         print(e)
@@ -258,7 +289,6 @@ def insert_data(conn, csv_file):
                             fire_weather_conditions_id
                         ))
                         fire_incident_id = cur.fetchone()[0]
-                        print("Inserted FireIncident ID:", fire_incident_id)
                     except Exception as e:
                         print(f"Error inserting FireIncidents row: {row.to_dict()}")
                         print(e)
@@ -266,7 +296,7 @@ def insert_data(conn, csv_file):
                         continue
 
                     row_count += 1
-                    print(f'Row count: {row_count}')
+                    
 
                 except Exception as e:
                     print(f"Error inserting row: {row.to_dict()}")
@@ -280,6 +310,4 @@ def insert_data(conn, csv_file):
         print("Error reading CSV file or inserting data into the database.")
         print(e)
 
-# Example usage
-# conn = psycopg.connect("dbname=test user=postgres password=secret")
-# insert_data(conn, 'your_file.csv')
+            

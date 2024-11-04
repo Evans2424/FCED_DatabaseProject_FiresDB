@@ -1,5 +1,9 @@
 from tabulate import tabulate
 from dataframeplotter import query_plotter
+from load_fires import delete_all_data, insert_data, insert_mock_data
+import os
+
+CSV_FILE = 'Data/Registos_Incendios_SGIF_2021_2023.csv'
 
 class Menu:
     def __init__(self, db_manager):
@@ -19,6 +23,7 @@ class Menu:
         print("[8] Total Response Time Comparison Between Districts")
         print("[9] Total Burned area By Month/Year")
         print("[10] Burned by type and fire duration of that district")
+        print("[11] Reload Database")
         print("--------------------------------")
         print("[0] to exit the program")
         print()
@@ -32,7 +37,7 @@ class Menu:
         if plot_option in ['1', '2','8', '9']:
             print("[2] Plot the reponse")
         print("--------------------------------")
-        print("[0] return to the mais menu")
+        print("[0] return to the main menu")
 
 
     def main_menu(self):
@@ -250,6 +255,7 @@ class Menu:
                                 plotter.setplottitle('Line Chart total vs Date')
                                 plotter.line_plot(df,'date','total')
 
+
                 case '10':
                     districts = ["Aveiro","Vila Real","Viseu","Bragança","Braga","Viana do Castelo","Porto","Lisboa","Coimbra","Beja","Castelo Branco","Setúbal","Guarda","Faro","Santarém","Portalegre","Leiria","Évora"]
                     print("Your Options:")
@@ -285,5 +291,9 @@ class Menu:
                             case '1':
                                 df = self.db_manager.show_in_pandas(self.db_manager.run_select(query))
                                 self.db_manager.export_to_csv(df)
+                case '11':
+                        delete_all_data(self.db_manager.connection_manager.connection)
+                        insert_data(self.db_manager.connection_manager.connection, CSV_FILE)
+                        insert_mock_data(self.db_manager.connection_manager.connection)
                 case _:
                     print("Invalid choice. Please try again.")

@@ -16,6 +16,8 @@ DROP TABLE IF EXISTS Vehicle_fireIncident CASCADE;
 DROP TABLE IF EXISTS Firefighter_fireIncident CASCADE;
 
 
+
+
 -- Create District table
 CREATE TABLE District (
     id SERIAL PRIMARY KEY,

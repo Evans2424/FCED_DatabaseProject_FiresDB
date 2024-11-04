@@ -1,5 +1,4 @@
 from ConnectionManager import ConnectionManager  
-from load_fires import delete_all_data, insert_data
 from GUI import Menu
 from DatabaseManager import DatabaseManager
 
@@ -12,7 +11,6 @@ DB_PARAMS = {
     'password': 'up202108818',
     'host': 'dbm.fe.up.pt',
     'port': '5433'
-    
 }
 
 
@@ -22,19 +20,15 @@ def main():
     conn_mgr = ConnectionManager(**DB_PARAMS)
     db_mgr = DatabaseManager(conn_mgr)
 
-    # Establish connection to PostgreSQL
-    conn_mgr.connect()
-    #delete_all_data(conn_mgr.connection)
-    #insert_data(conn_mgr.connection, CSV_FILE)
- 
-    #print(db_mgr.fires_from_Porto())
-    main = Menu(db_mgr)
-    main.main_menu()
-    
-    #cursor = conn_mgr.connection.cursor()
+        # Attempt to establish connection to PostgreSQL
+    if conn_mgr.connect():
+        # Proceed only if connection is successful
+        main = Menu(db_mgr)
+        main.main_menu()
+    else:
+        print("Failed to establish a connection. Exiting program.")
 
 
-    
     # Close the connection when done
     conn_mgr.close()
 

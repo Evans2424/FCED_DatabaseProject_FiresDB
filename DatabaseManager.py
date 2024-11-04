@@ -4,6 +4,7 @@ from tabulate import tabulate
 import pandas as pd
 from datetime import datetime
 import uuid
+import os
 
 class DatabaseManager:
     def __init__(self, connection_manager):
@@ -21,12 +22,22 @@ class DatabaseManager:
         response,column =  returnofquery[0],returnofquery[1]   
         df = pd.DataFrame(response,columns = column)
         return df
-    def export_to_csv(self,dataframe):
+    
+    def export_to_csv(self, dataframe):
         random_uuid = uuid.uuid4()
         now = datetime.now()
         # Format the datetime, removing the decimal point from seconds
         formatted_time = now.strftime("%Y-%m-%d")
-        dataframe.to_csv(f"EXPORT_{formatted_time}_{random_uuid}.csv", index=False)
+        
+        # Ensure the Output directory exists
+        output_dir = "Output"
+        os.makedirs(output_dir, exist_ok=True)
+        
+        # Construct the file path
+        file_path = os.path.join(output_dir, f"EXPORT_{formatted_time}_{random_uuid}.csv")
+        
+        # Export the dataframe to the CSV file
+        dataframe.to_csv(file_path, index=False)
         print("Export Done")
 
 
