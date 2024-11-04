@@ -1,36 +1,45 @@
+-- Reset the sequence for FireStation table
+ALTER SEQUENCE FireStation_id_seq RESTART WITH 1;
+
+-- Reset the sequence for Firefighter table
+ALTER SEQUENCE Firefighter_id_seq RESTART WITH 1;
+
+-- Reset the sequence for Vehicle table
+ALTER SEQUENCE Vehicle_id_seq RESTART WITH 1;
+
 -- Insert data into FireStation table
-INSERT INTO FireStation (id, StationName, Parish) VALUES 
-(1, 'Central Station', 1),
-(2, 'North Station', 2),
-(3, 'South Station', 3),
-(4, 'East Station', 4),
-(5, 'West Station', 5);
+INSERT INTO FireStation (StationName, Parish) VALUES 
+('Central Station', 1),
+('North Station', 2),
+('South Station', 3),
+('East Station', 4),
+('West Station', 5);
 
 -- Insert data into Firefighter table
-INSERT INTO Firefighter (id, FirstName, LastName, Rank, FireStation_id) VALUES 
-(1, 'John', 'Doe', 'Lieutenant', 1),
-(2, 'Jane', 'Smith', 'Captain', 2),
-(3, 'Carlos', 'Gomez', 'Firefighter', 1),
-(4, 'Anna', 'Johnson', 'Chief', 3),
-(5, 'Emily', 'Davis', 'Firefighter', 4),
-(6, 'Michael', 'Brown', 'Lieutenant', 5),
-(7, 'Sophia', 'Wilson', 'Firefighter', 2),
-(8, 'Daniel', 'Taylor', 'Captain', 4),
-(9, 'Olivia', 'Anderson', 'Firefighter', 3),
-(10, 'Lucas', 'Martinez', 'Firefighter', 5);
+INSERT INTO Firefighter (FirstName, LastName, Rank, FireStation_id) VALUES 
+('John', 'Doe', 'Lieutenant', 1),
+('Jane', 'Smith', 'Captain', 2),
+('Carlos', 'Gomez', 'Firefighter', 1),
+('Anna', 'Johnson', 'Chief', 3),
+('Emily', 'Davis', 'Firefighter', 4),
+('Michael', 'Brown', 'Lieutenant', 5),
+('Sophia', 'Wilson', 'Firefighter', 2),
+('Daniel', 'Taylor', 'Captain', 4),
+('Olivia', 'Anderson', 'Firefighter', 3),
+('Lucas', 'Martinez', 'Firefighter', 5);
 
 -- Insert data into Vehicle table
-INSERT INTO Vehicle (id, VehicleType, LicensePlate, FireStation_id) VALUES 
-(1, 'Fire Truck', 'FT-1234', 1),
-(2, 'Ambulance', 'AMB-5678', 2),
-(3, 'Ladder Truck', 'LT-9012', 3),
-(4, 'Fire Truck', 'FT-3456', 4),
-(5, 'Water Tanker', 'WT-7890', 5),
-(6, 'Rescue Vehicle', 'RV-1122', 1),
-(7, 'Fire Truck', 'FT-3344', 2),
-(8, 'Ambulance', 'AMB-5566', 3),
-(9, 'Fire Truck', 'FT-7788', 4),
-(10, 'Rescue Vehicle', 'RV-9900', 5);
+INSERT INTO Vehicle (VehicleType, LicensePlate, FireStation_id) VALUES 
+('Fire Truck', 'FT-1234', 1),
+('Ambulance', 'AMB-5678', 2),
+('Ladder Truck', 'LT-9012', 3),
+('Fire Truck', 'FT-3456', 4),
+('Water Tanker', 'WT-7890', 5),
+('Rescue Vehicle', 'RV-1122', 1),
+('Fire Truck', 'FT-3344', 2),
+('Ambulance', 'AMB-5566', 3),
+('Fire Truck', 'FT-7788', 4),
+('Rescue Vehicle', 'RV-9900', 5);
 
 -- Insert data into Vehicle_fireIncident table
 INSERT INTO Vehicle_fireIncident (Vehicle_id, FireIncident_id) VALUES 
