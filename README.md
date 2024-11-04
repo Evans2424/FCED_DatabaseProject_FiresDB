@@ -1,6 +1,8 @@
 # FCED_DatbaseProject_FiresDB
 This project involves creating a database to manage detailed data on fire incidents in Portugal. The database is designed to store detailed information about each fire incident and provide tools for data querying and visualization. The project includes tasks to design the database, load data, and implement both command-line and graphical interfaces for user interaction with the database.
-Files Included in this Zip
+
+
+Files Included in this Zip are
 
 
 UML_diagram.pdf
@@ -9,8 +11,15 @@ Contains the UML diagram that represents the database structure. This diagram de
 
 relationalmodel.pdf
 Specifies the relational model based on the UML diagram, detailing the database schema, including table structures, keys, and relationships.
+
+
 create.sql
-A SQL script used to set up the database structure in PostgreSQL by creating all necessary tables.
+This file will contain all the SQL commands needed to create tables, with necessary constraints and foreign keys.
+
+
+insert.sql
+As our csv file did not had data for firestations, firefighters and vehicles, we manually inserted some random values to these tables.
+So, this file has some sql insert commands to load the data to these tables.
 
 
 load_fires.py
@@ -23,11 +32,15 @@ Provides editable fields for easy modification of database credentials and schem
 
 GUI.py
 A Python script that offers a graphical user interface (GUI) for querying the database. It allows users to view detailed information about fire incidents, search for specific records, and access relevant data stored in the database.
+
+
 Dataframeplotter.py
 A Python script used to generate graphs and visualizations for specific database queries. This is particularly useful for analysis and insights based on the dataset.
 
+
 DatabaseManager.py
 This component is responsible for establishing the connection between the database and the GUI. It runs queries and returns results in a user-friendly format, and it also allows for exporting data to CSV.
+
 
 Main.py
 The main script for starting the project. This script should be edited to include the correct database connection credentials. It initializes the database connection and coordinates the functionality of the other scripts.
@@ -35,7 +48,7 @@ The main script for starting the project. This script should be edited to includ
 
 Group Member Contributions
 
-José Pedro Evans de Carvalho Nobre João (up202108818): database connection, load fires and Main.py file
+José Pedro Evans de Carvalho Nobre João (up202108818): database connection, loading and Main.py file
 
 Pooja Muchnur Muneswarappa (up202308623): Write querys and bar plot 
 
