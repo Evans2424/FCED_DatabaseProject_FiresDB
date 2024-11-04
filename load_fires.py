@@ -16,8 +16,8 @@ def convert_to_float(value):
 
 def delete_all_data(conn):
     tables = [
-        'sourcealert', 'burntarea', 'firefighter_fireincident','vehicle_fireincident',
-        'firefighter', 'firestation', 'vehicle','fireincidents','fireweatherconditions', 
+        'firefighter_fireincident','vehicle_fireincident',
+        'firefighter', 'vehicle', 'firestation','fireincidents','sourcealert', 'burntarea', 'fireweatherconditions', 
         'location_info', 'parishes', 'municipality', 'datetime', 'district', 'firecauses'
     ]
     
@@ -30,16 +30,12 @@ def delete_all_data(conn):
                 # Attempt to delete all data from the table
                 try:
                     cur.execute(sql.SQL("DELETE FROM {}").format(sql.Identifier(table)))
+
                 except Exception as e:
                     print(f"Error deleting data from table {table}: {e}")
                     continue
-                
-                # Attempt to reset sequence, if it exists
-                try:
+                if(table != 'firefighter_fireincident' and table != 'vehicle_fireincident' and table != 'firecauses'):
                     cur.execute(sql.SQL("ALTER SEQUENCE {} RESTART WITH 1").format(sql.Identifier(f"{table}_id_seq")))
-                except Exception as e:
-                    print(f"Error resetting sequence for table {table}: {e}")
-                    continue
                 
             conn.commit()
             
